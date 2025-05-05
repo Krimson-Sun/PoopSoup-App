@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package pubsub;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "poopsoup-app/pkg/pb/pubsub;pubsub";
+
+// PubSub — gRPC-сервис подписки и публикации событий по ключу.
+service PubSub {
+  // Клиент вызывает Subscribe и получает поток Event от сервера.
+  rpc Subscribe(SubscribeRequest) returns (stream Event);
+
+  // Клиент публикует событие по ключу; сервер возвращает Empty.
+  rpc Publish(PublishRequest) returns (google.protobuf.Empty);
+}
+
+// Запрос на подписку — содержит ключ, по которому клиент хочет получать события.
+message SubscribeRequest {
+  string key = 1;
+}
+
+// Запрос на публикацию — ключ и данные события.
+message PublishRequest {
+  string key  = 1;
+  string data = 2;
+}
+
+// Описание одного события в потоке.
+message Event {
+  string data = 1;
+}
