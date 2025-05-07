@@ -1,0 +1,10 @@
+services:
+  server:
+    build:
+      context: .
+      target: final
+    env_file:
+      - ./.env.docker
+    ports:
+      - "${GRPC_PORT:-50051}:${GRPC_PORT:-50051}"
+

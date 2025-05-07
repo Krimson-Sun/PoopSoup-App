@@ -8,6 +8,7 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"poopsoup-app/internal/app/interceptors"
 	"poopsoup-app/internal/app/subpub"
 	desc "poopsoup-app/pkg/pb/sub_pub"
 	"syscall"
@@ -58,7 +59,16 @@ func New(
 
 func (a *App) Run() error {
 	grpcEndpoint := fmt.Sprintf(":%d", a.options.grpcPort)
-	srv := grpc.NewServer()
+	srv := grpc.NewServer(
+		grpc.ChainUnaryInterceptor(
+			interceptors.RecoverUnaryInterceptor,
+			interceptors.ErrorCodesUnaryInterceptor,
+		),
+		grpc.ChainStreamInterceptor(
+			interceptors.RecoverStreamInterceptor,
+			interceptors.ErrorCodesStreamInterceptor,
+		),
+	)
 	service := subpub.New(a.PubSub)
 
 	desc.RegisterPubSubServer(srv, service)

@@ -2,8 +2,6 @@ package subpub
 
 import (
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	desc "poopsoup-app/pkg/pb/sub_pub"
 )
 
@@ -12,7 +10,7 @@ func (i *Implementation) Subscribe(in *desc.SubscribeRequest, stream grpc.Server
 		stream.Send(&desc.Event{Data: msg})
 	})
 	if err != nil {
-		return status.Errorf(codes.Unavailable, "Subscribe failed: %v", err)
+		return err
 	}
 	<-stream.Context().Done()
 	sub.Unsubscribe()
