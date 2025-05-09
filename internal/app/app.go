@@ -11,6 +11,7 @@ import (
 	"poopsoup-app/internal/app/interceptors"
 	"poopsoup-app/internal/app/subpub"
 	desc "poopsoup-app/pkg/pb/sub_pub"
+	"poopsoup-app/pkg/pubsub"
 	"syscall"
 )
 
@@ -40,11 +41,11 @@ func WithEnableReflection(enableReflection bool) OptionsFunc {
 
 type App struct {
 	options *Options
-	PubSub  subpub.PubSubService
+	PubSub  pubsub.SubPub[string]
 }
 
 func New(
-	ps subpub.PubSubService,
+	ps pubsub.SubPub[string],
 	options ...OptionsFunc,
 ) *App {
 	opts := defaultOptions

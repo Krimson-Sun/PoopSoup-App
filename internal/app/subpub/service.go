@@ -2,25 +2,15 @@ package subpub
 
 import (
 	desc "poopsoup-app/pkg/pb/sub_pub"
+	"poopsoup-app/pkg/pubsub"
 )
-
-type PubSubService interface {
-	Subscribe(subject string, handler MessageHandler) (Subscription, error)
-	Publish(subject string, msg string) error
-}
-
-type Subscription interface {
-	Unsubscribe()
-}
-
-type MessageHandler func(msg string)
 
 type Implementation struct {
 	desc.UnimplementedPubSubServer
-	PubSub PubSubService
+	PubSub pubsub.SubPub[string]
 }
 
-func New(ps PubSubService) *Implementation {
+func New(ps pubsub.SubPub[string]) *Implementation {
 	return &Implementation{
 		PubSub: ps,
 	}
