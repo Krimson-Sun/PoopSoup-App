@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"github.com/joho/godotenv"
 	"log"
 	"os"
@@ -10,6 +11,8 @@ import (
 )
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	if err := godotenv.Load(); err != nil {
 		log.Println("no .env file found")
 	}
@@ -55,6 +58,7 @@ func main() {
 	}
 
 	ps := pubsub.NewSubPub[string]()
+	defer ps.Close(ctx)
 	App := app.New(ps, appOpts...)
 	err := App.Run()
 	if err != nil {
